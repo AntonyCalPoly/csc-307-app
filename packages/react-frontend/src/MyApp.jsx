@@ -15,7 +15,13 @@ const [characters, setCharacters] = useState([]);
 
   function updateList(person) {
     postUser(person)
-      .then(() => setCharacters([...characters, person]))
+      .then((res) => {
+        if (res.status === 201) {
+          setCharacters([...characters, person]);
+        } else {
+          console.log("Failed to add user: status", res.status);
+        }
+      })
       .catch((error) => {
         console.log(error);
       })
