@@ -60,8 +60,17 @@ const addUser = (user) => {
   return user;
 };
 
-const generateId = () =>
-  Math.floor(Math.random() * 1000);
+const generateId = (length = 6) => {
+  const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    result += characters.charAt(randomIndex);
+  }
+  
+  return result;
+}
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -90,18 +99,18 @@ app.get("/users/:id", (req, res) => {
 
 app.delete("/users/:id", (req, res) => {
   const id = req.params["id"];
-  const index = users.findIndex(user => user.id === id);
+  const index = users["users_list"].findIndex(user => user.id === id);
   if (index === -1) {
     res.status(404).send("Resource not found.");
   } else {
-    users.splice(index, 1);
-    res.send("User Successfully deleted");
+    users["users_list"].splice(index, 1);
+    res.status(204).send();
   }
 })
 
 app.post("/users", (req, res) => {
   const userToAdd = req.body;
-  userToAdd.id = generateId();
+  userToAdd.id = generateId(6);
   addUser(userToAdd);
   res.status(201).send(userToAdd);
 });

@@ -6,11 +6,21 @@ import Form from "./Form";
 function MyApp() {
 const [characters, setCharacters] = useState([]);
 
-  function removeOneCharacter(index) {
-    const updated = characters.filter((character, i) => {
-      return i !== index;
+  function removeOneCharacter(index, id) {
+    fetch(`Http://localhost:8000/users/${id}`, {
+      method: "DELETE"
+    })
+    .then((res) => {
+      if(res.status === 204) {
+        const updated = characters.filter((character, i) => i !== index);
+        setCharacters(updated);
+      } else {
+       console.log("Failed to delete user: status", res.status)
+      }
+    })
+    .catch((error) => {
+      console.log("Error:", error.message);
     });
-    setCharacters(updated);
   }
 
   function updateList(person) {
