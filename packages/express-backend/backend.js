@@ -60,6 +60,9 @@ const addUser = (user) => {
   return user;
 };
 
+const generateId = () =>
+  Math.floor(Math.random() * 1000);
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
@@ -98,8 +101,9 @@ app.delete("/users/:id", (req, res) => {
 
 app.post("/users", (req, res) => {
   const userToAdd = req.body;
+  userToAdd.id = generateId();
   addUser(userToAdd);
-  res.status(201).send("User created successfully");
+  res.status(201).send(userToAdd);
 });
 
 app.listen(port, () => {

@@ -14,17 +14,7 @@ const [characters, setCharacters] = useState([]);
   }
 
   function updateList(person) {
-    postUser(person)
-      .then((res) => {
-        if (res.status === 201) {
-          setCharacters([...characters, person]);
-        } else {
-          console.log("Failed to add user: status", res.status);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      })
+    setCharacters([...characters, person]);
   }
 
   function fetchUsers() {
@@ -40,15 +30,26 @@ const [characters, setCharacters] = useState([]);
   }, [] );
 
   function postUser(person) {
-    const promise = fetch("Http://localhost:8000/users", {
+    return fetch("Http://localhost:8000/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(person),
+    })
+    .then((res) => {
+      if (res.status === 201) {
+        return res.json();
+      } else {
+        throw new Error("Failed to add User");
+      }
+    })
+    .then((person) => {
+      updateList(person);
+    })
+    .catch((error) => {
+      console.log("Error:", error.message);
     });
-
-    return promise;
   }
 
   return (
@@ -57,7 +58,7 @@ const [characters, setCharacters] = useState([]);
         characterData={characters} 
         removeCharacter={removeOneCharacter}
       />
-      <Form handleSubmit={updateList} />
+      <Form handleSubmit={(person) => postUser(person)} />
     </div>
   );
 }
