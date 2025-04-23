@@ -39,10 +39,10 @@ app.post("/users", (req, res) => {
 
 app.delete("/users/:id", (req, res) => {
   const id = req.params.id;
-  userServices.findUserById(id)
+  userServices.deleteUserById(id)
     .then(user => {
       if (!user) return res.status(404).send("Resource not found.");
-      return user.deleteOne().then(() => res.status(204).send());
+      res.status(204).send();
     })
     .catch(err => res.status(500).send(err.message));
 });
